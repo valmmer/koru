@@ -3,9 +3,177 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Clase</title>
+    <title>História dos Computadores - Carrossel Circular</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <p>Teste</p>
+    <header>
+      <h1>História dos Computadores</h1>
+      <p>Da era das válvulas aos supercomputadores modernos</p>
+    </header>
+
+    <div class="container">
+      <div class="roda-container">
+        <div class="roda" id="roda">
+          <div class="ponto centro">Início</div>
+          <!-- Os pontos serão posicionados via JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="btnRotate">
+        <i class="fas fa-sync-alt"></i> Girar Carrossel
+      </button>
+      <button class="btn" id="btnExpand">
+        <i class="fas fa-expand"></i> Expandir Todos
+      </button>
+    </div>
+
+    <div class="info-text">
+      Clique nos itens para ver mais informações | Passe o mouse para destacar
+    </div>
+
+    <div class="timeline" id="timeline">
+      <h2>Linha do Tempo Detalhada</h2>
+      <div class="timeline-content" id="timelineContent"></div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 História da Computação - Valmer Mariano</p>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const roda = document.getElementById("roda");
+        const pontos = [
+          {
+            titulo: "ENIAC (1946)",
+            descricao: "O primeiro computador eletrônico de uso geral.",
+            detalhes:
+              "O ENIAC (Electrical Numerical Integrator and Computer) foi o primeiro computador digital eletrônico de grande escala. Criado para cálculos de trajetória balística, ocupava 180m² e pesava 30 toneladas. Usava cerca de 18.000 válvulas termiônicas.",
+          },
+          {
+            titulo: "IBM 701 (1952)",
+            descricao: "O primeiro computador científico da IBM.",
+            detalhes:
+              "Conhecido como 'Defense Calculator', foi o primeiro computador científico comercial da IBM. Usado principalmente para cálculos científicos e de engenharia. Tinha uma memória de tubos de Williams com capacidade de 2.048 palavras.",
+          },
+          {
+            titulo: "Apple I (1976)",
+            descricao: "Primeiro computador pessoal da Apple.",
+            detalhes:
+              "Projetado por Steve Wozniak e comercializado por Steve Jobs, o Apple I foi montado à mão e vendido como placa-mãe (sem teclado, monitor ou fonte). Cerca de 200 unidades foram produzidas, cada uma vendida por $666.66.",
+          },
+          {
+            titulo: "IBM PC (1981)",
+            descricao: "Padronizou os PCs modernos.",
+            detalhes:
+              "O IBM Personal Computer modelo 5150 estabeleceu o padrão para computadores pessoais. Usava o processador Intel 8088 de 4.77 MHz e o sistema operacional PC-DOS da Microsoft. Seu design aberto permitiu a criação de clones, popularizando os PCs.",
+          },
+          {
+            titulo: "Notebooks (Anos 90)",
+            descricao: "Mobilidade para o usuário comum.",
+            detalhes:
+              "Os anos 90 viram a popularização dos notebooks. O IBM ThinkPad 700C (1992) estabeleceu padrões de design com seu trackpoint. A Apple lançou o PowerBook em 1991, introduzindo o trackball e teclado ergonômico que se tornaram padrão do setor.",
+          },
+          {
+            titulo: "Smartphones (2007+)",
+            descricao: "Computação de bolso.",
+            detalhes:
+              "O iPhone (2007) revolucionou a computação móvel com interface touchscreen multi-toque e App Store. Dispositivos Android seguiram logo após. Os smartphones tornaram-se computadores poderosos com câmeras de alta qualidade, GPS e conectividade constante.",
+          },
+          {
+            titulo: "IA & Quântica (Atual)",
+            descricao: "O futuro da computação.",
+            detalhes:
+              "A computação quântica usa qubits que podem existir em múltiplos estados simultaneamente, resolvendo problemas complexos intratáveis para computadores clássicos. A Inteligência Artificial com deep learning está transformando indústrias, de medicina a transportes.",
+          },
+        ];
+
+        // Criar e posicionar os pontos na roda
+        function criarPontos() {
+          const raio = 200; // Raio do círculo
+          const centroX = roda.offsetWidth / 2;
+          const centroY = roda.offsetHeight / 2;
+          const totalPontos = pontos.length;
+          const angulo = (2 * Math.PI) / totalPontos;
+
+          pontos.forEach((ponto, i) => {
+            const divPonto = document.createElement("div");
+            divPonto.className = "ponto";
+            divPonto.innerHTML = `<strong>${ponto.titulo}</strong><p>${ponto.descricao}</p>`;
+
+            // Calcular posição baseada no ângulo
+            const x = centroX + raio * Math.cos(i * angulo - Math.PI / 2) - 70;
+            const y = centroY + raio * Math.sin(i * angulo - Math.PI / 2) - 70;
+
+            divPonto.style.left = `${x}px`;
+            divPonto.style.top = `${y}px`;
+
+            // Adicionar evento de clique para mostrar detalhes
+            divPonto.addEventListener("click", () => {
+              mostrarDetalhes(ponto);
+            });
+
+            roda.appendChild(divPonto);
+          });
+        }
+
+        // Função para mostrar detalhes na timeline
+        function mostrarDetalhes(ponto) {
+          const timeline = document.getElementById("timeline");
+          const content = document.getElementById("timelineContent");
+
+          content.innerHTML = `
+          <h3>${ponto.titulo}</h3>
+          <p><strong>Descrição:</strong> ${ponto.descricao}</p>
+          <p><strong>Detalhes históricos:</strong> ${ponto.detalhes}</p>
+        `;
+
+          timeline.style.display = "block";
+        }
+
+        // Função para girar o carrossel
+        document
+          .getElementById("btnRotate")
+          .addEventListener("click", function () {
+            roda.classList.toggle("rotating");
+            this.innerHTML = roda.classList.contains("rotating")
+              ? '<i class="fas fa-stop"></i> Parar Rotação'
+              : '<i class="fas fa-sync-alt"></i> Girar Carrossel';
+          });
+
+        // Função para expandir todos os pontos
+        document
+          .getElementById("btnExpand")
+          .addEventListener("click", function () {
+            const timeline = document.getElementById("timeline");
+            const content = document.getElementById("timelineContent");
+
+            let html = "<h2>Linha do Tempo Completa</h2>";
+            pontos.forEach((ponto) => {
+              html += `
+            <div class="timeline-item">
+              <h3>${ponto.titulo}</h3>
+              <p><strong>Descrição:</strong> ${ponto.descricao}</p>
+              <p><strong>Detalhes:</strong> ${ponto.detalhes}</p>
+              <hr>
+            </div>
+          `;
+            });
+
+            content.innerHTML = html;
+            timeline.style.display = "block";
+          });
+
+        // Inicializar o carrossel
+        criarPontos();
+      });
+    </script>
   </body>
 </html>
